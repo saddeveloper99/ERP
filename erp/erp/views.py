@@ -13,7 +13,7 @@ def product_list_view(request):
         user = request.user.is_authenticated
         if user:
             all_product = Product.objects.all()
-            return render(request, 'erp/product_list.html', {'product': all_product})
+            return render(request, 'erp/product_list.html', {'all_product': all_product})
         else:
             return redirect('/sign-in')
 
@@ -22,14 +22,14 @@ def product_list_view(request):
         code = request.POST.get('code', '')
         description = request.POST.get('description', '')
         price = request.POST.get('price', '')
-        sizes = request.POST.get('sizes', '')
+        size = request.POST.get('size', '')
 
         my_product = Product.objects.create(
             name=name,
             code=code,
             description=description,
             price=price,
-            sizes=sizes 
+            size=size 
             )
         my_product.save()
         return redirect('/product_list')
