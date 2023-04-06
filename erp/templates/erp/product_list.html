@@ -4,35 +4,41 @@
 재고관리
 {% endblock %}
 {% block content %}
+
 <head>
     <title>Product List</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
-<style>
-.container {
-  margin-top: 50px;
-}
+    <style>
+        .container {
+            margin-top: 50px;
+        }
 
-.btn-primary {
-  margin-bottom: 10px;
-}
+        th {
+            text-align: center;
+        }
 
-th {
-  text-align: center;
-}
+        td {
+            vertical-align: middle;
+        }
 
-td {
-  vertical-align: middle;
-}
+        td:last-child {
+            text-align: center;
+        }
 
-td:last-child {
-  text-align: center;
-}
+        .btn-sm {
+            margin: 0 5px;
+        }
 
-.btn-sm {
-  margin: 0 5px;
-}
-</style>
+        .modal {
+            opacity: 1;
+        }
+
+        .modal-dialog {
+            top: 30%;
+            transform: translateY(-50%);
+        }
+    </style>
 </head>
 
 <body>
@@ -41,7 +47,11 @@ td:last-child {
             <div class="col-sm-12">
                 <h1 class="text-center">Product List</h1>
                 <div class="pull-right">
-                    <a href="" class="btn btn-primary">Add Product</a>
+                    <button type="button" style="margin-bottom: 10px;" class="btn btn-primary" id="addProductModalBtn" data-toggle="modal"
+                        data-target="#addProductModal">
+                        Add Product
+                    </button>
+                    <!-- <a href="" class="btn btn-primary">Add Product</a> -->
                 </div>
             </div>
         </div>
@@ -82,7 +92,54 @@ td:last-child {
             </div>
         </div>
     </div>
-{% endblock %}
+    <!-- Add Product Modal -->
+    <div class="modal fade" id="addProductModal" tabindex="-1" role="dialog" aria-labelledby="addProductModalLabel">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="addProductModalLabel">Add Product</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="/product_create/">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="code">Code</label>
+                            <input type="text" class="form-control" id="code" name="code" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <textarea class="form-control" id="description" name="description"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="price">Price</label>
+                            <input type="text" class="form-control" id="price" name="price" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="size">Size</label>
+                            <select class="form-control" id="size" name="size">
+                                <option value="S">Small</option>
+                                <option value="M">Medium</option>
+                                <option value="L">Large</option>
+                                <option value="F">Free</option>
+                            </select>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Add</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
 </body>
 
 </html>
