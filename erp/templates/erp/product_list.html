@@ -4,50 +4,85 @@
 재고관리
 {% endblock %}
 {% block content %}
-<div class="container timeline-container">
-    <div class="row">
-        <!-- 왼쪽 컬럼 -->
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">{{ user.username }}</h5>
-                    <p class="card-text"> {{ user.bio }}</p>
+<head>
+    <title>Product List</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
+<style>
+.container {
+  margin-top: 50px;
+}
+
+.btn-primary {
+  margin-bottom: 10px;
+}
+
+th {
+  text-align: center;
+}
+
+td {
+  vertical-align: middle;
+}
+
+td:last-child {
+  text-align: center;
+}
+
+.btn-sm {
+  margin: 0 5px;
+}
+</style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <h1 class="text-center">Product List</h1>
+                <div class="pull-right">
+                    <a href="" class="btn btn-primary">Add Product</a>
                 </div>
             </div>
         </div>
-        <!-- 오른 쪽 컬럼-->
-        <div class="col-md-7">
-            <div class="row">
-                <div class="alert alert-success" role="alert">
-                    나를 팔로우 하는 사람 수 : {{ user.followee.count }} 명 / 내가 팔로우 하는 사람 수 : {{ user.follow.count }} 명
-                </div>
-            </div>
-            <div class="row">
-                <!-- 사용자 리스트 반복문 -->
-                {% for ul in user_list %}
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ ul.username }}</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">{{ ul.email }}</h6>
-                        <p class="card-text">
-                            {{ ul.bio }}
-                        </p>
-                        <p class="card-text">
-                            팔로잉 {{ ul.follow.count }} 명 / 팔로워 {{ ul.followee.count }} 명
-                        </p>
-                        {% if ul in user.follow.all %}
-                        <a href="/user/follow/{{ ul.id }}" class="card-link">[팔로우 취소]</a>
-                        {% else %}
-                        <a href="/user/follow/{{ ul.id }}" class="card-link">[팔로우]</a>
-                        {% endif %}
-                    </div>
-                </div>
-                <hr>
-                {% endfor %}
+        <div class="row">
+            <div class="col-sm-12">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Price</th>
+                            <th>Size</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in product_list %}
+                        <tr>
+                            <td>{{ product.code }}</td>
+                            <td>{{ product.name }}</td>
+                            <td>{{ product.description }}</td>
+                            <td>{{ product.price }}</td>
+                            <td>{{ product.get_size_display }}</td>
+                            <td>
+                                <a href="{% url 'product_detail' product.id %}" class="btn btn-info btn-sm">View</a>
+                                <a href="{% url 'product_update' product.id %}" class="btn btn-warning btn-sm">Edit</a>
+                                <a href="{% url 'product_delete' product.id %}" class="btn btn-danger btn-sm">Delete</a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center">No products available.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
-        <div class="col-md-2"></div>
     </div>
-</div>
 {% endblock %}
+</body>
+
+</html>

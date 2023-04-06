@@ -1,5 +1,6 @@
 
 from .models import UserModel
+from django.contrib import auth
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.shortcuts import render, redirect
@@ -26,19 +27,24 @@ def user_login(request):
         username = request.POST.get('username', '')
         password = request.POST.get('password', '')
 
-        me = UserModel.objects.get(username=username)
-        if me.password == password:
-            request.session['user'] = me.username
+        me = auth.authenticate(request, username=username, password=password)
+        if me is not None:
+            auth.login(request, me)
             return redirect('/')
         else:
-            return redirect('/login')
+            return render(request, 'accounts/login.html')
+        
     elif request.method == 'GET':
-        return render(request, 'erp/product_list.html')
+        user = request.user.is_authenticated
+        if user:
+            return redirect('/')
+        else:
+            return render(request, 'accounts/login.html')
 
 
 def user_logout(request):
-    # 로그아웃 view
-    pass
+    auth.logout(request)
+    return redirect('/')
 
 
 # 실제 코드 흐름 > url주소를 지정하면 > view함수 > templates
