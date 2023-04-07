@@ -47,8 +47,8 @@
             <div class="col-sm-12">
                 <h1 class="text-center">Product List</h1>
                 <div class="pull-right">
-                    <button type="button" style="margin-bottom: 10px;" class="btn btn-primary" id="addProductModalBtn" data-toggle="modal"
-                        data-target="#addProductModal">
+                    <button type="button" style="margin-bottom: 10px;" class="btn btn-primary" id="addProductModalBtn"
+                        data-toggle="modal" data-target="#addProductModal">
                         Add Product
                     </button>
                     <!-- <a href="" class="btn btn-primary">Add Product</a> -->
@@ -97,11 +97,16 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="addProductModalLabel">Add Product</h4>
+                    <h4 class="modal-title" id="addProductModalLabel">상품 등록</h4>
                 </div>
                 <div class="modal-body">
                     <form method="POST" action="/product_list/">
                         {% csrf_token %}
+                        {% if error %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ error }}
+                        </div>
+                        {% endif %}
                         <div class="form-group">
                             <label for="code">Code</label>
                             <input type="text" class="form-control" id="code" name="code" required>
@@ -129,7 +134,8 @@
                         </div>
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary">Add</button>
-                            <button type="button" class="btn btn-secondary" id="modalCloseBtn" data-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-secondary" id="modalCloseBtn"
+                                data-dismiss="modal">Cancel</button>
                         </div>
                     </form>
                 </div>
