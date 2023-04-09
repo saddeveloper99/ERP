@@ -55,15 +55,14 @@ def inbound_create(request):
     elif request.method == 'POST':
         product_code = request.POST.get('product_code')
         inbound_quantity = request.POST.get('inbound_quantity', '')
+        product = Product.objects.get(code=product_code)
+        
         if product_code == '상품 코드':
             return render(request, 'erp/outbound_create.html', {'error': '상품을 선택해주세요', 'product_list':product_list})
-        
-        product = Product.objects.get(code=product_code)
-
         if inbound_quantity == '':
             return render(request, 'erp/inbound_create.html', {'error': '수량을 입력해 주세요.','product_list':product_list})
-       
         else:     
+            
             Inbound.objects.create(
                 product = product,
                 inbound_quantity = inbound_quantity,
@@ -81,13 +80,11 @@ def outbound_create(request):
     elif request.method == 'POST':
         product_code = request.POST.get('product_code')
         outbound_quantity = request.POST.get('outbound_quantity', '')
-        if product_code == '상품 코드':
-            return render(request, 'erp/outbound_create.html', {'error': '상품을 선택해주세요', 'product_list':product_list})
-        
         product = Product.objects.get(code=product_code)
 
-       
-        if outbound_quantity == '':
+        if product_code == '상품 코드':
+            return render(request, 'erp/outbound_create.html', {'error': '상품을 선택해주세요', 'product_list':product_list})
+        elif outbound_quantity == '':
             return render(request, 'erp/outbound_create.html', {'error': '수량을 입력해 주세요.', 'product_list':product_list})
         elif int(outbound_quantity) > int(product.quantity):
             return render(request, 'erp/outbound_create.html', {'error': '출고 수량이 현재 재고량보다 많습니다.', 'product_list':product_list})

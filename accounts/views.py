@@ -1,23 +1,32 @@
 
 from .models import UserModel
 from django.contrib import auth
-from django.contrib.auth import login, logout
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth import get_user_model
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
-
+from django.contrib.auth.decorators import login_required
 
 def sign_up_view(request):
     if request.method == 'GET':
-        return render(request, 'accounts/signup.html')
+        user = request.user.is_authenticated
+        if user:
+           return redirect('/')
+        else:
+           return render(request, 'accounts/signup.html')
+    
     elif request.method == 'POST':
         username = request.POST.get('username', '')
         password = request.POST.get('password', '')
         password2 = request.POST.get('password2', '')
-        # bio = request.POST.get('bio', '')
+
     if password != password2:
-        return render(request, 'accounts/signup.html')
+        return render(request, 'accounts/signup.html', {'error': '패스워드를 다시 입력해 주세요.'})
+    elif username == '' or password == '':
+            return render(request, 'accounts/signup.html', {'error': '이름과 비밀번호는 필수입니다.'})
     else:
+        exist_user = get_user_model().objects.filter(username=username)
+        if exist_user:
+            return render(request, 'accounts/signup.html', {'error': '이미 등록된 이름입니다.'})
+        
         UserModel.objects.create_user(username=username, password=password)
         return redirect('/login')
 
@@ -32,7 +41,7 @@ def user_login(request):
             auth.login(request, me)
             return redirect('/')
         else:
-            return render(request, 'accounts/login.html')
+            return render(request, 'accounts/login.html', {'error': '이름 혹은 패스워드를 확인해주세요.'})
         
     elif request.method == 'GET':
         user = request.user.is_authenticated
@@ -41,7 +50,7 @@ def user_login(request):
         else:
             return render(request, 'accounts/login.html')
 
-
+@login_required()
 def user_logout(request):
     auth.logout(request)
     return redirect('/')
