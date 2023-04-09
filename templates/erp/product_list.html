@@ -80,7 +80,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for product in all_product %}
+                        {% for product in product_list %}
                         <tr class="trlines">
                             <td>{{ product.code }}</td>
                             <td>{{ product.name }}</td>
@@ -96,7 +96,7 @@
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="6" class="text-center">No products available.</td>
+                            <td colspan="6" class="text-center">등록된 상품이 없습니다.</td>
                         </tr>
                         {% endfor %}
                     </tbody>

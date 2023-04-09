@@ -49,7 +49,7 @@ class Inbound(models.Model):
         self.product.quantity += int(self.inbound_quantity)
         self.amount = Decimal(self.product.price) * Decimal(self.inbound_quantity)
         self.product.save()
-
+        super().save(*args, **kwargs)
 # 출고 : 상품명(fk), 개수, 출고일자, 출고금액
 
 
@@ -69,4 +69,4 @@ class Outbound(models.Model):
         self.product.quantity -= int(self.outbound_quantity)
         self.amount = Decimal(self.product.price) * Decimal(self.outbound_quantity)
         self.product.save()
-
+        super().save(*args, **kwargs)

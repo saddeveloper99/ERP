@@ -17,8 +17,8 @@ def product_list_view(request):
     if request.method == 'GET':
         user = request.user.is_authenticated
         if user:
-            all_product = Product.objects.all()
-            return render(request, 'erp/product_list.html', {'all_product': all_product})
+            product_list = Product.objects.all()
+            return render(request, 'erp/product_list.html', {'product_list': product_list})
         else:
             return redirect('/login')
 
@@ -40,7 +40,6 @@ def product_list_view(request):
                 price=price,
                 size=sizes           
                 )
-            product.save()
             return redirect('/product_list')
     
 
@@ -48,19 +47,21 @@ def product_list_view(request):
 
 @login_required
 def inbound_create(request):
-    product = Product.objects.all()
+    product_list = Product.objects.all()
 
     if request.method == 'GET':
-        return render(request, 'erp/inbound_create.html', {'product_list':product})
+        return render(request, 'erp/inbound_create.html', {'product_list':product_list})
 
     elif request.method == 'POST':
         product_code = request.POST.get('product_code')
         inbound_quantity = request.POST.get('inbound_quantity', '')
-
+        if product_code == '상품 코드':
+            return render(request, 'erp/outbound_create.html', {'error': '상품을 선택해주세요', 'product_list':product_list})
+        
         product = Product.objects.get(code=product_code)
 
         if inbound_quantity == '':
-            return render(request, 'erp/inbound_create.html', {'product_list':product, 'error': '수량을 입력해 주세요.'})
+            return render(request, 'erp/inbound_create.html', {'error': '수량을 입력해 주세요.','product_list':product_list})
        
         else:     
             Inbound.objects.create(
@@ -72,21 +73,24 @@ def inbound_create(request):
     
 
 def outbound_create(request):
-    product = Product.objects.all()
+    product_list = Product.objects.all()
 
     if request.method == 'GET':
-        return render(request, 'erp/outbound_create.html', {'product_list':product})
+        return render(request, 'erp/outbound_create.html', {'product_list':product_list})
 
     elif request.method == 'POST':
         product_code = request.POST.get('product_code')
         outbound_quantity = request.POST.get('outbound_quantity', '')
-
+        if product_code == '상품 코드':
+            return render(request, 'erp/outbound_create.html', {'error': '상품을 선택해주세요', 'product_list':product_list})
+        
         product = Product.objects.get(code=product_code)
 
+       
         if outbound_quantity == '':
-            return render(request, 'erp/outbound_create.html', {'product_list':product, 'error': '수량을 입력해 주세요.'})
+            return render(request, 'erp/outbound_create.html', {'error': '수량을 입력해 주세요.', 'product_list':product_list})
         elif int(outbound_quantity) > int(product.quantity):
-            return render(request, 'erp/outbound_create.html', {'product_list':product, 'error': '출고 수량이 현재 재고량보다 많습니다.'})
+            return render(request, 'erp/outbound_create.html', {'error': '출고 수량이 현재 재고량보다 많습니다.', 'product_list':product_list})
         else:     
             Outbound.objects.create(
                 product = product,
