@@ -6,7 +6,6 @@ from decimal import Decimal
 
 
 class Product(models.Model):
-
     user = models.ForeignKey(UserModel, on_delete=models.CASCADE)
     code = models.CharField(max_length=256)
     name = models.CharField(max_length=256)
@@ -23,7 +22,7 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     date = models.DateTimeField(auto_now_add=True)
     quantity = models.IntegerField(default=0)
-    
+
     class Meta:
         db_table = "product"
 
@@ -47,10 +46,11 @@ class Inbound(models.Model):
 
     def save(self, *args, **kwargs):
         self.product.quantity += int(self.inbound_quantity)
-        self.amount = Decimal(self.product.price) * Decimal(self.inbound_quantity)
+        self.amount = Decimal(self.product.price) * \
+            Decimal(self.inbound_quantity)
         self.product.save()
         super().save(*args, **kwargs)
-        
+
 # 출고 : 상품명(fk), 개수, 출고일자, 출고금액
 
 
@@ -68,6 +68,7 @@ class Outbound(models.Model):
 
     def save(self, *args, **kwargs):
         self.product.quantity -= int(self.outbound_quantity)
-        self.amount = Decimal(self.product.price) * Decimal(self.outbound_quantity)
+        self.amount = Decimal(self.product.price) * \
+            Decimal(self.outbound_quantity)
         self.product.save()
         super().save(*args, **kwargs)
